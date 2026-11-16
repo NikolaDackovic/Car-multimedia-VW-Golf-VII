@@ -1,0 +1,13 @@
+# Car OS: staticki server za izgradjenu aplikaciju (samo lokalno, port 4173)
+[Unit]
+Description=Car OS web
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 -m http.server 4173 --bind 127.0.0.1 --directory /opt/car-os/dist
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

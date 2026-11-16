@@ -1,0 +1,18 @@
+# car-bridge: CAN, rikverc, taster P, kontakt -> Car OS (ws://127.0.0.1:8765)
+# Argumenti se menjaju u /etc/default/car-bridge (BRIDGE_ARGS=...)
+[Unit]
+Description=Car OS vehicle bridge
+After=network-online.target sys-subsystem-net-devices-can0.device
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/car-bridge
+ExecStart=/opt/car-os/venv/bin/python /opt/car-os/bridge/car_bridge.py $BRIDGE_ARGS
+Restart=always
+RestartSec=2
+User=carOS_USER
+SupplementaryGroups=gpio dialout
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,221 @@
+@import 'tailwindcss';
+@import './fonts.css';
+@import './tokens.css';
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  font-family: var(--font-sans);
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-sans);
+  color: var(--text-1);
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+input,
+textarea {
+  user-select: text;
+  caret-color: var(--accent);
+}
+
+img,
+svg {
+  -webkit-user-drag: none;
+}
+
+/* Fokus se crta samo za tastaturu / rotacioni kontroler, nikada na dodir */
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+button:disabled {
+  cursor: default;
+}
+
+body[data-hide-cursor='true'] * {
+  cursor: none !important;
+}
+
+/* Liste: bez sistemskog scrollbara — fabricki ekran crta svoj indikator */
+.touch-scroll {
+  overflow-y: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.touch-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+@layer components {
+  /* Funkcijsko dugme MIB2 */
+  .oem-btn {
+    background: var(--btn-bg);
+    border: 1px solid var(--btn-border);
+    box-shadow: var(--btn-highlight);
+    border-radius: var(--radius-btn);
+    color: var(--text-1);
+  }
+  /* Pritisak: dugme zasvetli plavo dok se drzi */
+  .oem-btn:active:not(:disabled) {
+    background: var(--accent-press);
+    border-color: var(--accent);
+  }
+  /* Aktivno (ukljuceno / izabrano): celo dugme je plavo */
+  .oem-btn[data-active='true'] {
+    background: var(--accent-fill);
+    border-color: color-mix(in srgb, var(--accent) 55%, #ffffff);
+    color: #ffffff;
+    box-shadow: inset 0 1px 0 0 #ffffff4d, var(--accent-glow);
+  }
+  .oem-btn[data-active='true']:active:not(:disabled) {
+    background: var(--accent-fill);
+    filter: brightness(1.12);
+  }
+  .oem-btn:disabled {
+    color: var(--text-disabled);
+    border-color: var(--line-soft);
+  }
+
+  /* Akcentni okvir (plocice menija, izabrana stavka) */
+  .oem-frame {
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, #ffffff);
+    border-radius: var(--radius-frame);
+    background: var(--accent-fill) !important;
+    box-shadow: inset 0 1px 0 0 #ffffff4d, var(--accent-glow);
+    color: #ffffff;
+  }
+
+  /* Plutajuci panel preko mape ili fotografije */
+  .overlay-panel {
+    background: var(--overlay-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-panel);
+    box-shadow: var(--shadow-3);
+    -webkit-backdrop-filter: var(--overlay-blur);
+    backdrop-filter: var(--overlay-blur);
+  }
+
+  /* Kartica (pocetna, plocice menija) */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-highlight), var(--shadow-2);
+    border-radius: var(--radius-tile);
+  }
+
+  /* Zadrzano zbog postojecih komponenti */
+  .surface-tile {
+    background: var(--btn-bg);
+    box-shadow: var(--btn-highlight);
+  }
+  .surface-tile-active {
+    background: var(--btn-bg);
+    box-shadow: var(--btn-highlight), var(--accent-glow);
+  }
+}
+
+/* Tekst i ikonice na plavoj (aktivnoj) povrsini su beli. Van slojeva, da bi
+   bili jaci od Tailwind klasa boje teksta. */
+.oem-frame .text-accent-ink,
+.oem-btn[data-active='true'] .text-accent-ink,
+[aria-current='page'] > .text-accent-ink {
+  color: #ffffff;
+}
+.oem-frame .text-text-3,
+.oem-btn[data-active='true'] .text-text-3 {
+  color: #ffffffc0;
+}
+
+/* Senzor priblizavanja: kada ruka nije blizu ekrana, pomocne kontrole se
+   povlace (fabricki "rezim prikaza"); prvi dodir ih vraca. */
+.prox {
+  transition: opacity 400ms ease;
+}
+:root[data-proximity='far'] .prox {
+  opacity: 0.35;
+}
+
+/* Suptilna tekstura vodoravnih linija, kao na fabrickim ekranima MIB2 */
+.mib-lines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--glass) 0px,
+    var(--glass) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 85%);
+  mask-image: linear-gradient(to top, #000 0%, transparent 85%);
+}
+
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+@keyframes loading-bar {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+@keyframes hold-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes marquee {
+  0%,
+  15% {
+    transform: translateX(0);
+  }
+  85%,
+  100% {
+    transform: translateX(var(--marquee-shift, 0));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

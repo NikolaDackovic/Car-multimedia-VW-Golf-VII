@@ -1,0 +1,4 @@
+websockets>=12
+python-can>=4.3
+cantools>=39
+gpiozero>=2.0

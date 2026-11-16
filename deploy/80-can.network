@@ -1,0 +1,8 @@
+# CAN interfejs vozila: 500 kbit/s, SAMO CITANJE (nista se ne salje u auto)
+[Match]
+Name=can0
+
+[CAN]
+BitRate=500K
+ListenOnly=yes
+RestartSec=100ms
